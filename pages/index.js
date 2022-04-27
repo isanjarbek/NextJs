@@ -1,52 +1,65 @@
-import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
-import styles from "../styles/Home.module.css";
+import { useState, useEffect, useRef } from "react";
 import { locationData } from "../constants/map";
+
+import styles from "../styles/Home.module.css";
 
 mapboxgl.accessToken =
   "pk.eyJ1IjoiaXNtb25zYW5qYXIiLCJhIjoiY2wyOHRqazVsMGNzeDNlcDF5OXZscWNpYSJ9.p9yeEQUgJis-43VOykElpg";
 
 export default function Home() {
-  const mapRef = useRef();
+  const map = useRef(null);
+  const mapContainer = useRef(null);
+  const [values, setValues] = useState("");
 
   useEffect(() => {
-    const map = new mapboxgl.Map({
-      container: "map",
+    if (map.current) return;
+
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
       style: "mapbox://styles/mapbox/streets-v11",
       zoom: 12,
-      center: [69.26667, 41.31],
+      center: [69.28, 41.31],
     });
-    map.addControl(
-      new mapboxgl.NavigationControl({ showCompass: false }),
-      "bottom-right"
+
+    map.current.addControl(
+      new mapboxgl.NavigationControl({ showCompass: false, showZoom: false })
     );
-    // map.doubleClickZoom.disable();
+
+    // map.addControl(
+    //   new MapboxDirections({
+    //     accessToken: mapboxgl.accessToken,
+    //   }),
+    //   "top-left"
+    // );
 
     locationData.forEach((i) => {
       let marker = new mapboxgl.Marker({ color: "#ff0000" })
         .setLngLat(i.coordinates)
-        .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(i.location))
+        // .setPopup(new mapboxgl.Popup({ offset: 25 }).setHTML(i.location))
+        .addTo(map.current);
 
-        .addTo(map);
+      marker.getElement().addEventListener("click", () => {
+        setValues(i.location);
+      });
     });
-
-    mapboxgl.Marker.prototype.getPopup = function () {
-      console.log("ref", mapRef.current);
-    };
   }, []);
 
-  const handleZoom = () => {
-    // mapRef.current.zoomIn();
+  const handleZoomIn = () => {
+    map.current.zoomIn();
+  };
+  const handleZoomOut = () => {
+    map.current.zoomOut();
   };
 
+  console.log("values", values);
+
   return (
-    <div className={styles.mapContainer}>
-      <button onClick={() => handleZoom()}>ZOOM +</button>
-      <div id="map" className={styles.map}></div>
-      <div className="popup" ref={mapRef}>
-        <h3>TITLE</h3>
-        {}
-      </div>
+    <div className={styles.container}>
+      <button onClick={handleZoomIn}>ZOOM IN</button>
+      <button onClick={handleZoomOut}>ZOOM OUT</button>
+      <h2>Location: {values}</h2>
+      <div ref={mapContainer} className={styles.map}></div>
     </div>
   );
 }

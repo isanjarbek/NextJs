@@ -1,0 +1,10 @@
+{
+  "users_page": {
+    "title": "Creating users",
+    "btn": "Create",
+    "users_title": "Users"
+  },
+  "news_page": {
+    "title": "News"
+  }
+}

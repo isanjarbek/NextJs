@@ -1,17 +1,15 @@
 import { useRouter } from "next/router";
-
-import en from "src/locals/en";
-import uz from "src/locals/uz";
+import { getByLocale } from "@utils/getByLocale";
 
 export default function ChangeLanguageComponent() {
   const router = useRouter();
-  let { locale } = router;
-  let t = locale === "en" ? en : uz;
-  console.log(locale);
+  let { locale, pathname, asPath } = router;
+
+  const t = getByLocale(locale);
 
   const changeLanguage = (e) => {
     const { value } = e.target;
-    router.push(router.pathname, router.asPath, { locale: value });
+    router.push(pathname, asPath, { locale: value });
   };
 
   return (
@@ -21,7 +19,7 @@ export default function ChangeLanguageComponent() {
         <option value="uz">UZ</option>
       </select>
 
-      <h2>{t.subtitle}</h2>
+      <h2>{t.users_page.title}</h2>
     </div>
   );
 }

@@ -1,0 +1,10 @@
+{
+  "users_page": {
+    "title": "Foydalanuvchi yaratish",
+    "btn": "Yaratish",
+    "users_title": "Foydalanuvchilar"
+  },
+  "news_page": {
+    "title": "Yangiliklar"
+  }
+}
